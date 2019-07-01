@@ -62,25 +62,25 @@ export default class App extends React.Component {
 
     componentDidMount = async () => {
         // Init Firebase configuration
-        let fbConfig = {
-            apiKey: configuration.apiKeyFirebase,
-            authDomain: configuration.authDomainFirebase,
-            databaseURL: configuration.databaseURLFirebase,
-            storageBucket: configuration.storageBucketFirebase,
-            messagingSenderId: configuration.messagingSenderIdFirebase
-        };
+        // let fbConfig = {
+        //     apiKey: configuration.apiKeyFirebase,
+        //     authDomain: configuration.authDomainFirebase,
+        //     databaseURL: configuration.databaseURLFirebase,
+        //     storageBucket: configuration.storageBucketFirebase,
+        //     messagingSenderId: configuration.messagingSenderIdFirebase
+        // };
 
         // Init Firebase
-        firebase.initializeApp(fbConfig);
+        // firebase.initializeApp(fbConfig);
 
         // Configuration Google Analytics
         ReactGA.initialize(configuration.googleAnalyticsTrackingId);
         ReactGA.pageview(window.location.pathname + window.location.search);
 
         // Récupération
-        const rootRef = firebase.database().ref();
-        this.messagesRef = rootRef.child('scores');
-        console.log('mess', this.messagesRef);
+        // const rootRef = firebase.database().ref();
+        // this.messagesRef = rootRef.child('scores');
+        // console.log('mess', this.messagesRef);
 
         // Permet de charger ma police d'écriture personnalisé
         this.font = await new FontFaceObserver('nokiafc22').load();
