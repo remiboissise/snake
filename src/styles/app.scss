@@ -1,0 +1,101 @@
+.game {
+    color: $white;
+    text-align: center;
+
+    .container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+
+        @media screen and (max-width: $small) {
+            flex-direction: column;
+        }
+
+        .test1 {
+            flex: 0 0 60%;
+        }
+
+        .instructions {
+            flex: 0 0 20%;
+            position: relative;
+
+            h4 {
+                margin-top: 0;
+                color: $green;
+            }
+
+            .instructions-wrap {
+                p {
+                    line-height: 2rem;
+                    padding: 15px 30px;
+                    text-align: justify;
+                    margin: 0;
+                }
+            }
+        }
+
+        .ranking {
+            flex: 0 0 20%;
+            position: relative;
+                            
+            h4 {
+                margin-top: 0;
+                color: $mustard;
+            }
+
+            .ranking-wrap {
+                position: absolute; 
+                left: 0; 
+                top: 5%; 
+                right: 0;
+                bottom: 0;
+                overflow: auto; 
+                .row {
+                    display: flex;
+                    flex-direction: row;
+                    flex-wrap: wrap;
+                    width: 100%;
+                    line-height: 2rem;
+                    .column {
+                        display: flex;
+                        flex-direction: column;
+                        flex-basis: 100%;
+                        flex: 1;
+                        margin: 0;
+                    }
+                }
+            }
+        }
+    }
+
+    .scores {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        justify-content: center;
+        align-content: space-between;
+    }
+
+    .test2 {
+        padding: 0 0 15px;
+
+        input[type=text] {
+            font-size: 1rem;
+            font-family: 'nokiafc22';
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid $white;
+            color: $white;
+        }
+
+        button {
+            font-size: 1rem;
+            font-family: 'nokiafc22';
+            background: transparent;
+            border: 1px solid $white;
+            color: $white;
+            cursor: pointer;
+        }
+    }
+    
+}
