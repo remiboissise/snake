@@ -8,7 +8,7 @@ Have fun :grin:
 
 ## Demo
 
-[Demo]: https://serpente.netlify.com
+[Demo]: https://snake.remiboissise.com
 See [Demo]
 
 ## Installation
