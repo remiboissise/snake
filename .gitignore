@@ -24,3 +24,5 @@ yarn-error.log*
 
 # files
 src/config/configuration.js
+netlify.toml
+.netlify/state.json

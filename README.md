@@ -9,5 +9,5 @@ Thanks to your snake catch a maximum of apple without biting you. If you get to 
 Have fun :grin:
 
 ## Demo
-[Demo]: https://remiboissise.github.io/snake/
+[Demo]: https://serpente.netlify.com
 See [Demo]
