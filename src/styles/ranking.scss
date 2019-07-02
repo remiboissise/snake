@@ -1,0 +1,19 @@
+.ranking {
+    flex: 0 0 20%;
+    position: relative;
+    padding: 0px 30px;
+                    
+    h4 {
+        margin-top: 0;
+        color: $mustard;
+    }
+
+    .ranking-wrap {
+        position: absolute; 
+        left: 0; 
+        top: 5%; 
+        right: 0;
+        bottom: 0;
+        overflow: auto;
+    }
+}

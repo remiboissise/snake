@@ -1,17 +1,18 @@
 import React from 'react'
 import ReactGA from 'react-ga';
 import configuration from '../config/configuration';
+import * as FontFaceObserver from 'fontfaceobserver';
+import UIfx from 'uifx';
+import eatMp3 from '../sounds/eat.mp3';
+import failMp3 from '../sounds/fail.mp3';
 import Canvas, { clearCanvas, showText } from '../components/Canvas';
 import { renderSnake, isInside, generateSnake, collision } from '../components/Snake';
 import { handleKeyboard, isNotOpposite, CONTROLS } from '../components/Controls';
 import { generateFood, renderFood, eat } from '../components/Food';
 import { DIFFICULTY, difficulty } from '../components/Difficulty';
-import Score from '../components/Score';
-import UIfx from 'uifx';
-import * as FontFaceObserver from 'fontfaceobserver';
-import eatMp3 from '../sounds/eat.mp3';
-import failMp3 from '../sounds/fail.mp3';
-import * as firebase from 'firebase';
+import Ranking from '../components/Ranking';
+import Instruction from '../components/Instruction';
+import { Firebase } from '../api/Firebase';
 
 const eatSound = new UIfx({ asset : eatMp3 });
 const failSound = new UIfx({ asset : failMp3 });
@@ -26,6 +27,7 @@ export default class App extends React.Component {
 
     constructor(props) {
         super(props);
+        this.fb = new Firebase();
         this.state = {
             snake: generateSnake(),
             food: generateFood(),
@@ -33,7 +35,9 @@ export default class App extends React.Component {
             keypressed: CONTROLS.RIGHT,
             delay: DIFFICULTY,
             status: Status.PLAY,
-            name: ''
+            name: '',
+            ranking: [],
+            save: false
         };
     }
 
@@ -56,31 +60,42 @@ export default class App extends React.Component {
             score: 0,
             keypressed: CONTROLS.RIGHT,
             delay: DIFFICULTY,
-            status: Status.PAUSE
+            status: Status.PAUSE,
+            save: false,
+            name: ""
         });
     }
 
-    componentDidMount = async () => {
-        // Init Firebase configuration
-        // let fbConfig = {
-        //     apiKey: configuration.apiKeyFirebase,
-        //     authDomain: configuration.authDomainFirebase,
-        //     databaseURL: configuration.databaseURLFirebase,
-        //     storageBucket: configuration.storageBucketFirebase,
-        //     messagingSenderId: configuration.messagingSenderIdFirebase
-        // };
+    add() {
+        let { name, score } = this.state;
+        if(name === "" || score < 0) { return };
+        this.fb.ranking().add({
+            name: this.state.name,
+            score: this.state.score,
+            date: Date.now()
+        });
+        this.setState({
+            name: "",
+            score: 0,
+            save: true
+        })
+    }
 
-        // Init Firebase
-        // firebase.initializeApp(fbConfig);
+    componentDidMount = async () => {
+        // Récupération du classement
+        this.fb.ranking().orderBy("score", "desc").onSnapshot((snapshot) => {
+            let ranking = [];
+            snapshot.forEach((doc) => {
+                ranking.push({ ...doc.data(), uid: doc.id })
+            });
+            this.setState({
+                ranking: ranking
+            });
+        });
 
         // Configuration Google Analytics
         ReactGA.initialize(configuration.googleAnalyticsTrackingId);
         ReactGA.pageview(window.location.pathname + window.location.search);
-
-        // Récupération
-        // const rootRef = firebase.database().ref();
-        // this.messagesRef = rootRef.child('scores');
-        // console.log('mess', this.messagesRef);
 
         // Permet de charger ma police d'écriture personnalisé
         this.font = await new FontFaceObserver('nokiafc22').load();
@@ -147,14 +162,14 @@ export default class App extends React.Component {
         snake.unshift(head);
         // S'il mange un fruit
         if(e) {
-            // On lance le son (eat)
-            eatSound.play(0.15);
             // On génère un nouveau fruit
             food = generateFood();
             // On incrémente le score
             score += 1;
             // On modifie la difficulté du jeu
             delay = difficulty(score);
+            // On lance le son (eat)
+            eatSound.play(0.15);
         } else {
             // S'il ne mange pas de fruit (on supprime la queue de notre serpent)
             snake.pop();
@@ -181,12 +196,15 @@ export default class App extends React.Component {
     }
 
     render() {
-        let { score, status, name } = this.state;
-        if(status === Status.GAMEOVER) {
-            var save_score = <div className="test2">
+        let { score, status, name, save, ranking } = this.state, html_save_score;
+        if(save) {
+            html_save_score = <div className="test2"><button onClick={this.retry.bind(this)}>Try again</button></div>;
+        }
+        if(status === Status.GAMEOVER && !save) {
+            html_save_score = <div className="test2">
             <p>Congratulations &nbsp;
-                <input type="text" name="name" value={name} onChange={this.handleChange.bind(this)}/>
-                , your score is {score}. &nbsp; <button>Save</button> <button onClick={this.retry.bind(this)}>Try again</button>
+                <input type="text" name="name" value={name} onChange={this.handleChange.bind(this)} />
+                , your score is {score}. &nbsp; <button onClick={this.add.bind(this)}>Save</button> <button onClick={this.retry.bind(this)}>Try again</button>
             </p>
         </div>
         }
@@ -194,38 +212,12 @@ export default class App extends React.Component {
             <div className="game">
                 <h1 className="title">Snake</h1>
                 <div className="container"> 
-                    <div className="instructions">
-                        <h4>Instructions</h4>
-                        <div className="instructions-wrap">
-                            <p>Thanks to your snake catch a maximum of apple without biting you. If you get to one edge you come out of the other.</p>
-                            <p>Controllable entirely on the keyboard with the arrow keys and 'z', 's', 'q', 'd'. Press the space bar to start the game and pause it.</p>
-                            <p>Have fun 😁</p>
-                        </div>
-                    </div>
-                    <div className="test1">
+                    <Instruction />
+                    <div className="board">
                         <Canvas />
-                        {save_score}
+                        {html_save_score}
                     </div>
-                    <div className="ranking">
-                    <h4>Classement</h4>
-                        <div className="ranking-wrap">
-                            <div className='row'>
-                                <p className='column'>1.</p>
-                                <p className='column'>Rémi</p>
-                                <p className='column'>20</p>
-                            </div>
-                            <div className='row'>
-                                <p className='column'>2.</p>
-                                <p className='column'>Rémi</p>
-                                <p className='column'>20</p>
-                            </div>
-                            <div className='row'>
-                                <p className='column'>3.</p>
-                                <p className='column'>Rémi</p>
-                                <p className='column'>20</p>
-                            </div>
-                        </div>
-                    </div>
+                    <Ranking ranking={ranking} />
                 </div>
             </div>
         )

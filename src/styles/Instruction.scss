@@ -1,0 +1,19 @@
+.instructions {
+    flex: 0 0 20%;
+    position: relative;
+    padding: 0px 30px;
+
+    h4 {
+        margin-top: 0;
+        color: $green;
+    }
+
+    .instructions-wrap {
+        p {
+            padding: 15px 0px;
+            line-height: 2rem;
+            text-align: justify;
+            margin: 0;
+        }
+    }
+}
