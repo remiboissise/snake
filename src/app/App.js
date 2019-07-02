@@ -186,14 +186,13 @@ export default class App extends React.Component {
             var save_score = <div className="test2">
             <p>Congratulations &nbsp;
                 <input type="text" name="name" value={name} onChange={this.handleChange.bind(this)}/>
-                , your score is {score}. &nbsp; <button>Send</button> <button onClick={this.retry.bind(this)}>Try again</button>
+                , your score is {score}. &nbsp; <button>Save</button> <button onClick={this.retry.bind(this)}>Try again</button>
             </p>
         </div>
         }
         return (
             <div className="game">
                 <h1 className="title">Snake</h1>
-                {save_score}
                 <div className="container"> 
                     <div className="instructions">
                         <h4>Instructions</h4>
@@ -205,6 +204,7 @@ export default class App extends React.Component {
                     </div>
                     <div className="test1">
                         <Canvas />
+                        {save_score}
                     </div>
                     <div className="ranking">
                     <h4>Classement</h4>
