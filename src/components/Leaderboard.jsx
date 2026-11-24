@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { fetchTopScores, leaderboardEnabled } from "../leaderboard.js"
+import { appCheckEnabled, fetchTopScores, leaderboardEnabled } from "../leaderboard.js"
 
 export default function Leaderboard({ refreshKey }) {
   const [board, setBoard] = useState({
@@ -42,6 +42,13 @@ export default function Leaderboard({ refreshKey }) {
         ) : (
           <p>No scores yet. Finish a game to take first place.</p>
         ))}
+      {appCheckEnabled && (
+        <p className="recaptcha">
+          This site is protected by reCAPTCHA and the Google{" "}
+          <a href="https://policies.google.com/privacy">Privacy Policy</a> and{" "}
+          <a href="https://policies.google.com/terms">Terms of Service</a> apply.
+        </p>
+      )}
     </section>
   )
 }

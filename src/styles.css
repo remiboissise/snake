@@ -159,6 +159,20 @@ body {
 .leaderboard .points {
   text-align: right;
 }
+/* The reCAPTCHA notice in the leaderboard replaces Google's floating badge. */
+.leaderboard .recaptcha {
+  margin-top: 2rem;
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.leaderboard .recaptcha a {
+  color: inherit;
+}
+
+.grecaptcha-badge {
+  visibility: hidden;
+}
 
 @media (max-width: 800px) {
   .layout {

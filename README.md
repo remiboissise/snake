@@ -58,11 +58,26 @@ npx firebase-tools login
 npx firebase-tools deploy --only firestore:rules --project <your-project-id>
 ```
 
-Scores are computed in the browser, so the rules cannot stop a determined player from submitting a fake score that respects these limits. [Firebase App Check](https://firebase.google.com/docs/app-check) would make that harder.
+### App Check
 
+[Firebase App Check](https://firebase.google.com/docs/app-check) makes Firestore answer only requests that come from the real site, using reCAPTCHA Enterprise. Scripts that call the database directly are turned away.
+
+1. In the Firebase console, open **Project settings > Your apps** and register a web app if there is none. Copy its app ID into `VITE_FIREBASE_APP_ID`.
+2. In the Google Cloud console, enable the **reCAPTCHA Enterprise API** and create a **website** key for your domain, without the checkbox challenge. Copy it into `VITE_RECAPTCHA_SITE_KEY`.
+3. In the Firebase console, open **App Check**, register the web app with the **reCAPTCHA Enterprise** provider and that site key.
+4. For local development, start `npm run dev`, copy the debug token the browser console prints, and add it under **App Check > Apps > Manage debug tokens**. Put it in `VITE_FIREBASE_APPCHECK_DEBUG_TOKEN` to keep it.
+5. Deploy the site, check in **App Check > APIs > Cloud Firestore** that the requests are verified, then click **Enforce**.
+
+The page shows Google's reCAPTCHA notice under the leaderboard instead of the floating badge.
+
+### API key
+
+In the Google Cloud console, under **APIs & Services > Credentials**, restrict the browser key to your site (`https://your-domain/*` and `http://localhost:5173/*`) and to the **Cloud Firestore API** and **Firebase App Check API**.
+
+Scores are still computed in the browser: a player can always submit, from the real page, a fake score that respects the rules.
 ## Deployment
 
-`netlify.toml` holds the build settings and the security headers (Content Security Policy, HSTS, etc.). On Netlify, set `VITE_FIREBASE_API_KEY` and `VITE_FIREBASE_PROJECT_ID` in the site's environment variables.
+`netlify.toml` holds the build settings and the security headers (Content Security Policy, HSTS, etc.). On Netlify, set the variables of `.env.example` in the site's environment variables, except the debug token.
 
 ## Author
 
