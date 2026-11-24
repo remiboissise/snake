@@ -1,0 +1,23 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /ranking/{entryId} {
+      // Only the top 10 can be listed, and entries can never be edited or deleted.
+      allow list: if request.query.limit <= 10;
+      allow create: if isValidEntry(request.resource.data);
+    }
+
+    // 60 x 40 board: the snake can grow to 2,400 cells, so the score tops out at 2,399.
+    function isValidEntry(entry) {
+      return entry.keys().hasOnly(['name', 'score', 'date'])
+        && entry.name is string
+        && entry.name.trim().size() >= 1
+        && entry.name.size() <= 20
+        && entry.score is int
+        && entry.score >= 1
+        && entry.score <= 2399
+        && entry.date == request.time;
+    }
+  }
+}
