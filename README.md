@@ -77,6 +77,8 @@ In the Google Cloud console, under **APIs & Services > Credentials**, restrict t
 Scores are still computed in the browser: a player can always submit, from the real page, a fake score that respects the rules.
 ## Deployment
 
+The site is linked to this repository on Netlify: every push to `master` runs the tests, builds and goes live, and every pull request gets a preview link. If a test fails, the deploy stops and the current version stays online.
+
 `netlify.toml` holds the build settings and the security headers (Content Security Policy, HSTS, etc.). On Netlify, set the variables of `.env.example` in the site's environment variables, except the debug token.
 
 ## Author
